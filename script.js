@@ -11,6 +11,25 @@ function newBook(title, author, pages, read = false) {
   this.read = read;
 }
 
+function createNewBookFromLocalStorage(title, author, pages) {
+  const aNewBook = new newBook(title, author, pages);
+  addBookToLibrary(aNewBook);
+  renderBook(aNewBook);
+}
+
+// loads previuos added books
+window.onload = function () {
+  for (let i = 0; i < localStorage.length; i++) {
+    let retrievedObject = localStorage.getItem(i);
+    const newBookObj = JSON.parse(retrievedObject);
+    createNewBookFromLocalStorage(
+      newBookObj.title,
+      newBookObj.author,
+      newBookObj.pages
+    );
+  }
+};
+
 submit.addEventListener("click", (e) => createNewBook(e));
 
 function createNewBook(e) {
@@ -19,8 +38,19 @@ function createNewBook(e) {
     pages = document.getElementById("pages").value;
 
   e.preventDefault();
+
   const aNewBook = new newBook(title, author, pages);
   addBookToLibrary(aNewBook);
+
+  let bookObj = {
+    title: aNewBook.title,
+    author: aNewBook.author,
+    pages: aNewBook.pages,
+  };
+
+  // Put the object into storage
+  localStorage.setItem(localStorage.length - 1, JSON.stringify(bookObj));
+
   const form = document.getElementById("form");
   form.reset();
   renderBook(aNewBook);
@@ -65,5 +95,7 @@ function renderBook(aNewBook) {
     // removes from array
     let bookIndex = myLibrary.map((book) => book.title).indexOf(aNewBook.title);
     myLibrary.splice(bookIndex, 1);
+    //remove book from local storage
+    localStorage.removeItem(bookIndex);
   });
 }
