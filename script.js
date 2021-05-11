@@ -33,11 +33,8 @@ function addBookToLibrary(aNewBook) {
 }
 
 function renderBook(aNewBook) {
-  const card = document.querySelector('.book-col') //.cloneNode(true);
-
-  //element.classList.remove("mystyle");
-
-
+  const card = document.querySelector('.book-col').cloneNode(true);
+  card.classList.remove("d-none");
 
   card.querySelector('.card-header').textContent = aNewBook.title;
   card.querySelector('.card-title').textContent = aNewBook.author;
