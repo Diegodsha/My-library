@@ -11,13 +11,13 @@ function newBook(title, author, pages, read = false) {
   this.read = read;
 }
 
-function createNewBookFromLocalStorage(title, author, pages) {
-  const aNewBook = new newBook(title, author, pages);
+function createNewBookFromLocalStorage(title, author, pages, read) {
+  const aNewBook = new newBook(title, author, pages, read);
   addBookToLibrary(aNewBook);
   renderBook(aNewBook);
 }
 
-// loads previuos added books
+// loads previous added books
 window.onload = function () {
   for (let i = 0; i < localStorage.length; i++) {
     let retrievedObject = localStorage.getItem(i);
@@ -25,7 +25,8 @@ window.onload = function () {
     createNewBookFromLocalStorage(
       newBookObj.title,
       newBookObj.author,
-      newBookObj.pages
+      newBookObj.pages,
+        newBookObj.read
     );
   }
 };
@@ -46,10 +47,12 @@ function createNewBook(e) {
     title: aNewBook.title,
     author: aNewBook.author,
     pages: aNewBook.pages,
+    read: aNewBook.read
   };
 
   // Put the object into storage
-  localStorage.setItem(localStorage.length - 1, JSON.stringify(bookObj));
+  const bookIndex = localStorage.length == 0 ? 0 : localStorage.length
+  localStorage.setItem(bookIndex.toString(), JSON.stringify(bookObj));
 
   const form = document.getElementById("form");
   form.reset();
@@ -73,6 +76,17 @@ function renderBook(aNewBook) {
   // change book status
   const readUnreadBtn = card.querySelector("#unread");
 
+  if (aNewBook.read == true) {
+    readUnreadBtn.textContent = "Read";
+    readUnreadBtn.classList.remove("btn-warning");
+    readUnreadBtn.classList.add("btn-success");
+  } else {
+    readUnreadBtn.textContent = "Unread";
+    readUnreadBtn.classList.remove("btn-success");
+    readUnreadBtn.classList.add("btn-warning");
+  }
+
+
   readUnreadBtn.addEventListener("click", () => {
     if (aNewBook.read == false) {
       aNewBook.read = true;
@@ -85,9 +99,12 @@ function renderBook(aNewBook) {
       readUnreadBtn.classList.remove("btn-success");
       readUnreadBtn.classList.add("btn-warning");
     }
+    let bookIndex = myLibrary.map((book) => book.title).indexOf(aNewBook.title);
+    //update book read state in local storage
+    localStorage.setItem(bookIndex.toString(), JSON.stringify(aNewBook));
   });
 
-  //remove buton
+  //remove button
   const removeBtn = card.querySelector("#remove");
   // removes from view
   removeBtn.addEventListener("click", () => {
