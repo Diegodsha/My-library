@@ -25,9 +25,23 @@ function createNewBook(e) {
   addBookToLibrary(aNewBook);
   const form = document.getElementById("form");
   form.reset();
+  renderBook(aNewBook);
 }
 
 function addBookToLibrary(aNewBook) {
   myLibrary.push(aNewBook);
 }
 
+function renderBook(aNewBook) {
+  const card = document.querySelector('.book-col') //.cloneNode(true);
+
+  //element.classList.remove("mystyle");
+
+
+
+  card.querySelector('.card-header').textContent = aNewBook.title;
+  card.querySelector('.card-title').textContent = aNewBook.author;
+  card.querySelector('.card-text').textContent = aNewBook.pages;
+  document.querySelector('.book-row').appendChild(card);
+
+}
