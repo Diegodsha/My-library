@@ -1,4 +1,4 @@
-const submit = document.getElementById("submit");
+const submit = document.getElementById('submit');
 
 const myLibrary = [];
 
@@ -14,39 +14,39 @@ function addBookToLibrary(aNewBook) {
 }
 
 function renderBook(aNewBook) {
-  const bookRow = document.querySelector(".book-row");
-  const card = document.querySelector(".book-col").cloneNode(true);
-  card.classList.remove("d-none");
+  const bookRow = document.querySelector('.book-row');
+  const card = document.querySelector('.book-col').cloneNode(true);
+  card.classList.remove('d-none');
 
-  card.querySelector(".card-header").textContent = aNewBook.title;
-  card.querySelector(".card-title").textContent = aNewBook.author;
-  card.querySelector(".card-text").textContent = aNewBook.pages;
-  document.querySelector(".book-row").appendChild(card);
+  card.querySelector('.card-header').textContent = aNewBook.title;
+  card.querySelector('.card-title').textContent = aNewBook.author;
+  card.querySelector('.card-text').textContent = aNewBook.pages;
+  document.querySelector('.book-row').appendChild(card);
 
   // change book status
-  const readUnreadBtn = card.querySelector("#unread");
+  const readUnreadBtn = card.querySelector('#unread');
 
   if (aNewBook.read === true) {
-    readUnreadBtn.textContent = "Read";
-    readUnreadBtn.classList.remove("btn-warning");
-    readUnreadBtn.classList.add("btn-success");
+    readUnreadBtn.textContent = 'Read';
+    readUnreadBtn.classList.remove('btn-warning');
+    readUnreadBtn.classList.add('btn-success');
   } else {
-    readUnreadBtn.textContent = "Unread";
-    readUnreadBtn.classList.remove("btn-success");
-    readUnreadBtn.classList.add("btn-warning");
+    readUnreadBtn.textContent = 'Unread';
+    readUnreadBtn.classList.remove('btn-success');
+    readUnreadBtn.classList.add('btn-warning');
   }
 
-  readUnreadBtn.addEventListener("click", () => {
+  readUnreadBtn.addEventListener('click', () => {
     if (aNewBook.read === false) {
       aNewBook.read = true;
-      readUnreadBtn.textContent = "Read";
-      readUnreadBtn.classList.remove("btn-warning");
-      readUnreadBtn.classList.add("btn-success");
+      readUnreadBtn.textContent = 'Read';
+      readUnreadBtn.classList.remove('btn-warning');
+      readUnreadBtn.classList.add('btn-success');
     } else {
       aNewBook.read = false;
-      readUnreadBtn.textContent = "Unread";
-      readUnreadBtn.classList.remove("btn-success");
-      readUnreadBtn.classList.add("btn-warning");
+      readUnreadBtn.textContent = 'Unread';
+      readUnreadBtn.classList.remove('btn-success');
+      readUnreadBtn.classList.add('btn-warning');
     }
     const bookIndex = myLibrary
       .map((book) => book.title)
@@ -56,9 +56,9 @@ function renderBook(aNewBook) {
   });
 
   // remove button
-  const removeBtn = card.querySelector("#remove");
+  const removeBtn = card.querySelector('#remove');
   // removes from view
-  removeBtn.addEventListener("click", () => {
+  removeBtn.addEventListener('click', () => {
     bookRow.removeChild(card);
     // removes from array
     const bookIndex = myLibrary
@@ -85,22 +85,22 @@ window.onload = function () {
       newBookObj.title,
       newBookObj.author,
       newBookObj.pages,
-      newBookObj.read
+      newBookObj.read,
     );
   }
 };
 
 function createNewBook(e) {
-  const title = document.getElementById("title").value;
-  const author = document.getElementById("author").value;
-  const pages = document.getElementById("pages").value;
+  const title = document.getElementById('title').value;
+  const author = document.getElementById('author').value;
+  const pages = document.getElementById('pages').value;
 
   e.preventDefault();
 
   function validateForm(title, author, pages) {
     let aNewBook;
-    if (title === "" || author === "" || pages === "") {
-      alert("please fill all the form");
+    if (title === '' || author === '' || pages === '') {
+      alert('please fill all the form');
     } else {
       aNewBook = new NewBook(title, author, pages);
       addBookToLibrary(aNewBook);
@@ -116,7 +116,7 @@ function createNewBook(e) {
       const bookIndex = localStorage.length === 0 ? 0 : localStorage.length;
       localStorage.setItem(bookIndex.toString(), JSON.stringify(bookObj));
 
-      const form = document.getElementById("form");
+      const form = document.getElementById('form');
       form.reset();
       renderBook(aNewBook);
     }
@@ -124,4 +124,4 @@ function createNewBook(e) {
   validateForm(title, author, pages);
 }
 
-submit.addEventListener("click", (e) => createNewBook(e));
+submit.addEventListener('click', (e) => createNewBook(e));
