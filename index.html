@@ -16,7 +16,7 @@
   <body>
     <main class="container">
       <header class="text-center mb-5 d-flex flex-column align-items-center">
-        <h1>My library</h1>
+        <h1 class="m-3">My library</h1>
         <!-- Button trigger modal -->
         <button
           type="button"
@@ -101,7 +101,21 @@
           </div>
         </div>
       </header>
-      <section class="row book-row"></section>
+      <section class="row book-row">
+        <div class="col-12 col-md-6 col-lg-4 book-col d-none mb-5">
+          <div class="card text-center">
+            <div class="card-header">Book title</div>
+            <div class="card-body">
+              <h5 class="card-title">Author's name</h5>
+              <p class="card-text">pages</p>
+            </div>
+            <div class="card-footer text-muted">
+              <button id="unread" class="btn btn-warning me-4">Unread</button>
+              <button id="remove" class="btn btn-danger">Remove</button>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   </body>
   <script
