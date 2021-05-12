@@ -78,17 +78,20 @@ function createNewBookFromLocalStorage(title, author, pages, read) {
 
 // loads previous added books
 window.onload = function () {
-  for (let i = 0; i < localStorage.length; i += 1) {
-    const retrievedObject = localStorage.getItem(i);
-    const newBookObj = JSON.parse(retrievedObject);
-    createNewBookFromLocalStorage(
-      newBookObj.title,
-      newBookObj.author,
-      newBookObj.pages,
-      newBookObj.read,
-    );
-  }
+
+    const booksSaved = getBooksFromFirebase();
+
 };
+
+
+
+
+
+
+
+
+
+
 
 function createNewBook(e) {
   const title = document.getElementById('title').value;
@@ -116,6 +119,9 @@ function createNewBook(e) {
       const bookIndex = localStorage.length === 0 ? 0 : localStorage.length;
       localStorage.setItem(bookIndex.toString(), JSON.stringify(bookObj));
 
+      //Put the object in firebase storage
+      sendBookToFirebase(aNewBook);
+
       const form = document.getElementById('form');
       form.reset();
       renderBook(aNewBook);
@@ -125,3 +131,64 @@ function createNewBook(e) {
 }
 
 submit.addEventListener('click', (e) => createNewBook(e));
+
+
+function sendBookToFirebase(aNewBook) {
+  firebase.database().ref('books/' + aNewBook.title).set({
+    title: aNewBook.title,
+    author: aNewBook.author,
+    pages: aNewBook.pages,
+    read: aNewBook.read
+  },(error) => {
+        if (error) {
+          alert('The book could not be saved. Please try again')
+        } else {
+          // Data saved successfully!
+        }
+      }
+      );
+}
+
+function getBooksFromFirebase() {
+  // [START rtdb_read_once_get]
+  const dbRef = firebase.database().ref();
+  dbRef.child("books").get().then((snapshot) => {
+
+
+    if (snapshot.exists()) {
+      console.log('value:');
+
+      const newBookObj = snapshotToArray(snapshot);
+      console.log(newBookObj);
+      newBookObj.forEach(function (bookDetails) {
+
+        createNewBookFromLocalStorage(
+            bookDetails.title,
+            bookDetails.author,
+            bookDetails.pages,
+            bookDetails.read,
+        );
+      });
+
+    } else {
+      console.log("No data available");
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
+
+}
+
+
+function snapshotToArray(snapshot) {
+  var returnArr = [];
+
+  snapshot.forEach(function(childSnapshot) {
+    var item = childSnapshot.val();
+    item.key = childSnapshot.key;
+
+    returnArr.push(item);
+  });
+
+  return returnArr;
+};
