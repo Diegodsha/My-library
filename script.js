@@ -13,6 +13,8 @@ function addBookToLibrary(aNewBook) {
   myLibrary.push(aNewBook);
 }
 
+
+
 function renderBook(aNewBook) {
   const bookRow = document.querySelector('.book-row');
   const card = document.querySelector('.book-col').cloneNode(true);
@@ -70,7 +72,8 @@ function renderBook(aNewBook) {
   });
 }
 
-function createNewBookFromLocalStorage(title, author, pages, read) {
+
+function createNewBookFromStorage(title, author, pages, read) {
   const aNewBook = new NewBook(title, author, pages, read);
   addBookToLibrary(aNewBook);
   renderBook(aNewBook);
@@ -78,18 +81,8 @@ function createNewBookFromLocalStorage(title, author, pages, read) {
 
 // loads previous added books
 window.onload = function () {
-
-    const booksSaved = getBooksFromFirebase();
-
+  getBooksFromFirebase();
 };
-
-
-
-
-
-
-
-
 
 
 
@@ -107,7 +100,7 @@ function createNewBook(e) {
     } else {
       aNewBook = new NewBook(title, author, pages);
       addBookToLibrary(aNewBook);
-
+/*
       const bookObj = {
         title: aNewBook.title,
         author: aNewBook.author,
@@ -118,8 +111,9 @@ function createNewBook(e) {
       // Put the object into storage
       const bookIndex = localStorage.length === 0 ? 0 : localStorage.length;
       localStorage.setItem(bookIndex.toString(), JSON.stringify(bookObj));
-
+*/
       //Put the object in firebase storage
+
       sendBookToFirebase(aNewBook);
 
       const form = document.getElementById('form');
@@ -134,35 +128,76 @@ submit.addEventListener('click', (e) => createNewBook(e));
 
 
 function sendBookToFirebase(aNewBook) {
-  firebase.database().ref('books/' + aNewBook.title).set({
-    title: aNewBook.title,
-    author: aNewBook.author,
-    pages: aNewBook.pages,
-    read: aNewBook.read
-  },(error) => {
-        if (error) {
-          alert('The book could not be saved. Please try again')
-        } else {
-          // Data saved successfully!
-        }
-      }
-      );
+
+
+  checkIfBookExists('books', aNewBook.title)
+
+  .then((check) => {
+       if(check){
+         console.log('Book already exists');
+         alert('Book already exists');
+       }
+       else{
+         firebase.database().ref('books/' + aNewBook.title).set({
+               title: aNewBook.title,
+               author: aNewBook.author,
+               pages: aNewBook.pages,
+               read: aNewBook.read
+             },(error) => {
+               if (error) {
+                 alert('The book could not be saved. Please try again')
+               } else {
+                 // Data saved successfully!
+               }
+             }
+         );
+       }
+     })
+     .catch((error) => {
+       console.error(error);
+     });
+
 }
 
-function getBooksFromFirebase() {
+
+function checkIfBookExists(dbName = 'books', bookName) {
   // [START rtdb_read_once_get]
   const dbRef = firebase.database().ref();
-  dbRef.child("books").get().then((snapshot) => {
+  return dbRef.child(dbName).child(bookName).get()
+   .then((snapshot) => {
+    if (snapshot.exists()) {
+      console.log('checkIfBookExists');
+      console.log(snapshot.val());
+      console.log('checkIfBookExists2');
+      return true;
+    } else {
+      console.log("No data available");
+      return false;
+    }
+  })
+
+}
+
+
+
+
+
+
+function getBooksFromFirebase() {
+  const dbRef = firebase.database().ref();
+  dbRef.child("books").get().then( snapshot => {
 
 
     if (snapshot.exists()) {
       console.log('value:');
 
       const newBookObj = snapshotToArray(snapshot);
-      console.log(newBookObj);
+
+      console.log(Object.values(snapshot.val()));
+
       newBookObj.forEach(function (bookDetails) {
 
-        createNewBookFromLocalStorage(
+        createNewBookFromStorage(
             bookDetails.title,
             bookDetails.author,
             bookDetails.pages,
@@ -181,14 +216,15 @@ function getBooksFromFirebase() {
 
 
 function snapshotToArray(snapshot) {
-  var returnArr = [];
 
-  snapshot.forEach(function(childSnapshot) {
-    var item = childSnapshot.val();
-    item.key = childSnapshot.key;
+  //This line also returns an array
+  return Object.values(snapshot.val())
 
-    returnArr.push(item);
-  });
-
-  return returnArr;
+  // var returnArr = [];
+  // snapshot.forEach(function(childSnapshot) {
+  //   var item = childSnapshot.val();
+  //   item.key = childSnapshot.key;
+  //   returnArr.push(item);
+  // });
+  // return returnArr;
 };
