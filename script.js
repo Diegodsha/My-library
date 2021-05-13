@@ -9,9 +9,18 @@ const myLibrary = [];
 //   this.read = read;
 // }
 
-const NewBook = (title, author, pages, read = false) => {
-  return { title, author, pages, read };
-};
+// const NewBook = (title, author, pages, read = false) => {
+//   return { title, author, pages, read };
+// };
+
+class NewBook {
+  constructor(title, author, pages, read = false) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+  }
+}
 
 function addBookToLibrary(aNewBook) {
   myLibrary.push(aNewBook);
@@ -75,7 +84,7 @@ function renderBook(aNewBook) {
 }
 
 function createNewBookFromLocalStorage(title, author, pages, read) {
-  const aNewBook = NewBook(title, author, pages, read);
+  const aNewBook = new NewBook(title, author, pages, read);
   addBookToLibrary(aNewBook);
   renderBook(aNewBook);
 }
@@ -106,7 +115,7 @@ function createNewBook(e) {
     if (title === '' || author === '' || pages === '') {
       alert('Please fill all the form');
     } else {
-      aNewBook = NewBook(title, author, pages);
+      aNewBook = new NewBook(title, author, pages);
       addBookToLibrary(aNewBook);
 
       const bookObj = {
