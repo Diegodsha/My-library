@@ -2,12 +2,16 @@ const submit = document.getElementById('submit');
 
 const myLibrary = [];
 
-function NewBook(title, author, pages, read = false) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-}
+// function NewBook(title, author, pages, read = false) {
+//   this.title = title;
+//   this.author = author;
+//   this.pages = pages;
+//   this.read = read;
+// }
+
+const NewBook = (title, author, pages, read = false) => {
+  return { title, author, pages, read };
+};
 
 function addBookToLibrary(aNewBook) {
   myLibrary.push(aNewBook);
@@ -71,7 +75,7 @@ function renderBook(aNewBook) {
 }
 
 function createNewBookFromLocalStorage(title, author, pages, read) {
-  const aNewBook = new NewBook(title, author, pages, read);
+  const aNewBook = NewBook(title, author, pages, read);
   addBookToLibrary(aNewBook);
   renderBook(aNewBook);
 }
@@ -100,9 +104,9 @@ function createNewBook(e) {
   function validateForm(title, author, pages) {
     let aNewBook;
     if (title === '' || author === '' || pages === '') {
-      alert('please fill all the form');
+      alert('Please fill all the form');
     } else {
-      aNewBook = new NewBook(title, author, pages);
+      aNewBook = NewBook(title, author, pages);
       addBookToLibrary(aNewBook);
 
       const bookObj = {
