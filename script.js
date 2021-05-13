@@ -87,7 +87,6 @@ function renderBook(aNewBook) {
     });
 }
 
-
 function createNewBookFromStorage(title, author, pages, read) {
     const aNewBook = new NewBook(title, author, pages, read);
     renderBook(aNewBook);
@@ -119,14 +118,13 @@ function createNewBook(e) {
 
         const form = document.getElementById('form');
         form.reset();
-        renderBook(aNewBook);
+
     } else {
         alert('All fields must be filled');
     }
 }
 
 submit.addEventListener('click', (e) => createNewBook(e));
-
 
 function sendBookToFirebase(aNewBook) {
     checkIfBookExists('books', aNewBook.title)
@@ -148,13 +146,13 @@ function sendBookToFirebase(aNewBook) {
                         }
                     }
                 );
+                renderBook(aNewBook);
             }
         })
         .catch((error) => {
             console.error(error);
         });
 }
-
 
 function checkIfBookExists(dbName = 'books', bookName) {
     const dbRef = firebase.database().ref();
